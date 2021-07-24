@@ -1,8 +1,11 @@
+**If you want to use ARMORY or M-Ulator in your own projects, please take a look at the [ARMORY code repository](https://github.com/emsec/arm-fault-simulator).**
+The repository you are currently looking at only contains our code used to produce the results from our paper.
+It is not maintained and does not receive any updates!
+
 # Navigation
 1. [Introduction](#introduction)
 2. [Reproducing the Experiments](#reproduce)
-3. [Using ARMORY in Your Own Projects](#projects)
-4. [Academic Context](#academic-context)
+3. [Academic Context](#academic-context)
 
 # Welcome to ARMORY! <a name="introduction"></a>
 
@@ -28,13 +31,6 @@ In order to reproduce the experiments from our paper yourself, follow these step
 
 By default, this will execute the first-order experiments, i.e., this will generate the results that are summarized in Table II of our paper.
 In order to run the higher-order experiments, navigate to the end of `code/case_study_aes/src/main.cpp` and `code/case_study_secure_boot/src/main.cpp`, and flip the `#if` switch.
-
-# Using ARMORY in Your Own Projects <a name="projects"></a>
-
-If you want to use ARMORY or M-Ulator in your own projects, please take a look at the [ARMORY code repository](https://github.com/emsec/arm-fault-simulator).
-
-The repository you are currently looking at only contains our code used to produce the results from our paper.
-It does not receive any code-related updates!
 
 # Academic Context <a name="academic-context"></a>
 
