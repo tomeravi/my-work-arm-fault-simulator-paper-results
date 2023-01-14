@@ -32,14 +32,16 @@ def get_regs(x):
 lines = list()
 with open(sys.argv[1], "rt") as file:
     for x in file.readlines():
-        x = x.replace("\t"," ").strip()
-        if "@" in x and x[0] != "@":
-            x = x[:x.index("@")]
-        x = x.strip()
+        if ".ascii" not in x: 
+            x = x.replace("\t"," ").strip()
+            if "@" in x and x[0] != "@":
+                x = x[:x.index("@")]
+            x = x.strip()
 
-        for r in replacements:
-            x = re.sub(r"\b"+r+r"\b", replacements[r], x)
-
+            for r in replacements:
+                x = re.sub(r"\b"+r+r"\b", replacements[r], x)
+        else:
+            x = x.strip()
         lines.append(x)
 
 ######################################################

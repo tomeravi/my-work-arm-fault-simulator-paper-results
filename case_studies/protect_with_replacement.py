@@ -23,14 +23,17 @@ def get_regs(x):
 lines = list()
 with open(sys.argv[1], "rt") as file:
     for x in file.readlines():
-        x = x.replace("\t"," ").strip()
-        if "@" in x and x[0] != "@":
-            x = x[:x.index("@")]
-        x = x.strip()
+        if ".ascii" not in x: #Tomer skip all .ascii lines
+            x = x.replace("\t"," ").strip()
+         
+            if "@" in x and x[0] != "@":
+                x = x[:x.index("@")]
+            x = x.strip()
 
-        for r in replacements:
-            x = re.sub(r"\b"+r+r"\b", replacements[r], x)
-
+            for r in replacements:
+                x = re.sub(r"\b"+r+r"\b", replacements[r], x)
+        else:
+            x = x.strip()
         lines.append(x)
 
 new_label_cnt = 1000
@@ -53,10 +56,26 @@ for x in reads_sreg_ops:
 
 unknowns=list()
 i = 0
+ignore_section=0
 while i < len(lines):
     line = lines[i]
     orig_line = line
 
+    #Tomer - add label to skip replacments
+    if line == "@IgnoreStart":
+      print("####begin ignore...")
+      ignore_section = 1
+      i += 1
+      continue
+    if line == "@IgnoreEnd":
+      print("####stop ignore...")
+      ignore_section = 0
+      i += 1
+      continue
+    if ignore_section == 1:
+      print("####skip...")
+      i += 1
+      continue
     if not line or line[0] == "." or line[-1] == ":" or line[0] == "@":
         i += 1
         continue
