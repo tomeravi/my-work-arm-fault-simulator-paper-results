@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-OPTIMIZATIONS = ["O1", "O2", "O3", "Os"]
+OPTIMIZATIONS = ["O1"] #, "O2", "O3", "Os"]
 ARCHS = ["armv7-m"]
 OPTS = "-Wall -Wpedantic -std=c11 -ffreestanding -nostdlib -mthumb"
 
@@ -36,15 +36,16 @@ for a in ARCHS:
         control_flow_name = "files/2_control_flow_"+a+"_"+o+".s"
         combined_name = "files/3_combined_"+a+"_"+o+".s"
 
-        os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -S aes.c -o " + unprotected_name)
+#        os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -S aes.c -o " + unprotected_name)
+        unprotected_name="files/0_naked_armv7-m_O1.s.for_protect_with_replacement"
         os.system("python3 ../protect_with_replacement.py "+unprotected_name+" r5 "+replacement_name)
 
-        os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -ffixed-r6 -ffixed-r7 -S aes.c -o " + unprotected_name)
-        os.system("python3 ../protect_control_flow.py "+unprotected_name+" r5 r6 r7 "+control_flow_name)
+#        os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -ffixed-r6 -ffixed-r7 -S aes.c -o " + unprotected_name)
+#        os.system("python3 ../protect_control_flow.py "+unprotected_name+" r5 r6 r7 "+control_flow_name)
 
-        os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -ffixed-r6 -ffixed-r7 -S aes.c -o " + unprotected_name)
-        os.system("python3 ../protect_control_flow.py "+unprotected_name+" r5 r6 r7 "+combined_name)
-        os.system("python3 ../protect_with_replacement.py "+combined_name+" r5 "+combined_name)
+#        os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -ffixed-r6 -ffixed-r7 -S aes.c -o " + unprotected_name)
+#        os.system("python3 ../protect_control_flow.py "+unprotected_name+" r5 r6 r7 "+combined_name)
+#        os.system("python3 ../protect_with_replacement.py "+combined_name+" r5 "+combined_name)
 
-        os.system("arm-none-eabi-gcc "+opts+" -S aes.c -o " + unprotected_name)
+        #os.system("arm-none-eabi-gcc "+opts+" -S aes.c -o " + unprotected_name)
 
