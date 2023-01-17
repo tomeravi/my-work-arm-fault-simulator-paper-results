@@ -1,7 +1,7 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from pathlib import Path
 #p = Path(r".")
 pd.set_option("display.max_rows",1000)
 raw_df = pd.read_csv(r"SummaryTransientInstructionInNakedReport.txt",delimiter="\s+",header = None)
@@ -40,8 +40,8 @@ plt.close("all")
 
 
 plt.close("all")
-add_counts = df.address.value_counts()
-add_gb = df.groupby("address")
+add_counts = raw_df.address.value_counts()
+add_gb = raw_df.groupby("address")
 plt.close("all")
 
 
