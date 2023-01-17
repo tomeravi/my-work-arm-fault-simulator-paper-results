@@ -89,7 +89,6 @@ add_round_key:
 	@ frame_needed = 0, uses_anonymous_args = 0
 	@ link register save eliminated.
 	push	{r4, r6, r7}
-@IgnoreStart
 	lsls	r0, r0, #4
 	adds	r6, r1, #4
 	add	ip, r1, #20
@@ -109,7 +108,6 @@ add_round_key:
 	bne	.L12
 	pop	{r4, r6, r7}
 	bx	lr
-@IgnoreEnd
 	.size	add_round_key, .-add_round_key
 	.align	1
 	.syntax unified
