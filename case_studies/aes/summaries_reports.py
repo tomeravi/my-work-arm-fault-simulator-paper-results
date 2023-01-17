@@ -1,6 +1,7 @@
-#create the summary report by this line
-#grep "Transient Instruction" 0_naked_armv7-m_O1.rpt | awk -F'[:|]' '{printf $1 " : " $3 "\n"}' |sort > summary_report.txt
-
+#go over all reports/*rpt 
+#print summary of faults per type 
+#and create a raw temp summary report for other python post processing
+import os
 import sys
 from collections import Counter
 from pathlib import Path
@@ -26,3 +27,6 @@ for p in Path('reports').glob('*.rpt'):
         sum_faults += num
         print("Number of "+fault+" : "+str(num)) 
     print("all faults : "+str(sum_faults))
+    #create the summary report by this line
+    #grep "|" 0_naked_armv7-m_O1.rpt |grep " Instruction "  | awk -F'[:|]' '{printf $1 " : " $3 "\n"}' |sort > summary_report.txt
+    os.system("grep \"|\" reports/"+p.name+" |grep \" Instruction \"  | awk -F'[:|]' '{printf $1 \" : \" $3 \"\\n\"}' |sort > reports/"+p.name+"_tmp_summary")
