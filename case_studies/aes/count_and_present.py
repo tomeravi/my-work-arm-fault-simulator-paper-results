@@ -26,35 +26,37 @@ def get_summary_graph(filename,sources_dir):
 
     plt.close("all")
     """
+    #present # of faults per type
     f,ax = plt.subplots(figsize=(16,12))
     raw_df.groupby("op").size().plot.bar(ax=ax)
-    ax.set_title("counts")
+    ax.title("counts")
     ax.grid()
-    plt.savefig(p/"total.png")
-    plt.close("all")
-
-    f,ax = plt.subplots(figsize= (16,12))
-    counts_df.iloc[:25,:-1].plot.bar(ax=ax,stacked=False)
-    plt.savefig(p/"leading_25.png")
+    plt.title(filename)
+    plt.savefig(file_path+"_total.png")
     plt.close("all")
     """
     f,ax = plt.subplots(figsize= (16,12))
+    counts_df.iloc[:50,:-1].plot.bar(ax=ax,stacked=False)
+    plt.title(filename)
+    plt.savefig(file_path+"_leading_50.png")
+    plt.close("all")
+    
+    f,ax = plt.subplots(figsize= (16,12))
     counts_df.iloc[:,:-1].plot.bar(ax=ax,stacked=False)
+    plt.title(filename)
     plt.savefig(file_path+"_all.png")
     plt.close("all")
 
-    """
+
     plt.close("all")
     add_counts = raw_df.address.value_counts()
     add_gb = raw_df.groupby("address")
     plt.close("all")
-
-
-
+    """
     f,ax = plt.subplots(figsize= (16,12))
     counts_df.iloc[:25,:-1].plot.bar(ax=ax,stacked=True)
-    plt.savefig(p/r"hist.png")
-
+    plt.title(filename)
+    plt.savefig(file_path+"_hist.png")
 
     plt.close("all")
     f,ax = plt.subplots(figsize=(16,12))
@@ -63,8 +65,9 @@ def get_summary_graph(filename,sources_dir):
     percents_df.iloc[:,:-1].plot(ax=ax)
     ax.set_ylabel("percents(%)")
     ax.grid()
-    plt.savefig(p/"percents.png")
-
+    plt.title(filename)
+    plt.savefig(file_path+"_percents.png")
+    """
 
     f,ax = plt.subplots(figsize=(16,12))
     percents_df = counts_df.copy()
@@ -72,8 +75,8 @@ def get_summary_graph(filename,sources_dir):
     percents_df.iloc[:,:-1].plot(ax=ax)
     ax.set_ylabel("# count")
     ax.grid()
-    plt.savefig(p/"counts.png")
-    """
+    plt.title(filename)
+    plt.savefig(file_path+"_counts.png")
 
     #cleaning step
     os.remove("raw.csv")
