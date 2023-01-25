@@ -39,6 +39,9 @@ with open(sys.argv[1], "rt") as file:
 new_label_cnt = 1000
 
 idempotent_ops = ["add", "adc", "sub", "mul", "rsb", "mov", "and", "orr", "ror", "eor", "bic", "bfi", "lsl", "lsr", "cmp", "tst", "ldr", "str", "uxt", "sxt", "b", "bx", "cbz", "cbnz", "ubfx", "sbfx", "adcs", "mrs","msr"]
+#try to minimize the commands list that replaced , found the essential list here by :
+#grep "Transient Instruction Skip" 0_naked_armv7-m_O1.rpt|awk -F'[[]' '{printf $2  "\n"}' |awk -F'[ ]' '{printf $1 "\n"}'|sort|uniq
+#idempotent_ops = ["add", "eor", "lsl", "lsr", "ldr", "str", "b","mov"] #all faults : 12834 , this subset faults :12638 , 
 reads_sreg_ops = ["ror", "adc"]
 
 suffixes = ["","b","h","s", "ne", "eq", "hi", "lo", "gt", "ls", "cs","cc", "ia", "db"]
