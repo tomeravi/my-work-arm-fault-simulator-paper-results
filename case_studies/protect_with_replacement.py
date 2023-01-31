@@ -60,10 +60,12 @@ for x in reads_sreg_ops:
 unknowns=list()
 i = 0
 ignore_section=0
+skip_counter=0
+
 while i < len(lines):
     line = lines[i]
     orig_line = line
-
+    
     #Tomer - add label to skip replacments
     if line == "@IgnoreStart":
       print("####begin ignore...")
@@ -71,18 +73,21 @@ while i < len(lines):
       i += 1
       continue
     if line == "@IgnoreEnd":
+      print("####skipping "+str(skip_counter)+" commands")
+      skip_counter = 0
       print("####stop ignore...")
       ignore_section = 0
       i += 1
       continue
     if ignore_section == 1:
-      print("####skip...")
+      #print("####skip...")
+      skip_counter += 1
       i += 1
       continue
     if not line or line[0] == "." or line[-1] == ":" or line[0] == "@":
-        i += 1
-        continue
-
+      i += 1
+      continue
+    
     op = line.split()[0]
 
     if op in unsupported_ops:

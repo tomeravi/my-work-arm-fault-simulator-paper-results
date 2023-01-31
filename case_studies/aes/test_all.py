@@ -15,6 +15,10 @@ os.makedirs("reports/", exist_ok=True)
 for f in sorted(os.listdir("files")):
     if f.endswith(".s") and all(x in f for x in sys.argv[1:]):
         name = f[:f.rfind(".")]
+        rpt_name="reports/"+name+".rpt"
+        if os.path.exists(rpt_name):
+            print(rpt_name+" exist , so skip it")
+            continue
         print("#"*10 + " " + f + " " + "#"*10)
         print("")
         os.makedirs("data/", exist_ok=True)

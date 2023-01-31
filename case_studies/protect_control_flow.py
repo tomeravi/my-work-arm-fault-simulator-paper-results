@@ -32,7 +32,7 @@ def get_regs(x):
 lines = list()
 with open(sys.argv[1], "rt") as file:
     for x in file.readlines():
-        if ".ascii" not in x: 
+        if ".ascii" not in x: #Tomer skip all .ascii lines
             x = x.replace("\t"," ").strip()
             if "@" in x and x[0] != "@":
                 x = x[:x.index("@")]

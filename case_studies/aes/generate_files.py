@@ -39,12 +39,12 @@ for a in ARCHS:
         
         os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -S aes.c -o " + unprotected_name)
         #copy this file for later refference 
-        os.system("cp "+unprotected_name +" " + unprotected_name+"_special_build_for_replacement")
+        #os.system("cp "+unprotected_name +" " + unprotected_name+"_special_build_for_replacement")
         os.system("python3 ../protect_with_replacement.py "+unprotected_name+" r5 "+replacement_name)
         #now generate replacment from pre-build file
-        temp_unprotected_name="files/0_naked_armv7-m_O1.s_build_for_replacement"
-        temp_replacement_name="files/1_replacement_armv7-m_O1_with_ignore_areas.s"
-        os.system("python3 ../protect_with_replacement.py "+temp_unprotected_name+" r5 "+temp_replacement_name)
+        #temp_unprotected_name="files/0_naked_armv7-m_O1.s_build_for_replacement"
+        #temp_replacement_name="files/1_replacement_armv7-m_O1_with_ignore_areas.s"
+        #os.system("python3 ../protect_with_replacement.py "+temp_unprotected_name+" r5 "+temp_replacement_name)
 
 #        os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -ffixed-r6 -ffixed-r7 -S aes.c -o " + unprotected_name)
 #        os.system("python3 ../protect_control_flow.py "+unprotected_name+" r5 r6 r7 "+control_flow_name)
@@ -53,5 +53,5 @@ for a in ARCHS:
 #        os.system("python3 ../protect_control_flow.py "+unprotected_name+" r5 r6 r7 "+combined_name)
 #        os.system("python3 ../protect_with_replacement.py "+combined_name+" r5 "+combined_name)
 
-        os.system("arm-none-eabi-gcc "+opts+" -S aes.c -o " + unprotected_name)
+        os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -S aes.c -o " + unprotected_name)
 
