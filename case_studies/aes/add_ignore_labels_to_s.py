@@ -91,7 +91,7 @@ high_failures_list = get_most_vulnerable_addresses()
 print(high_failures_list[:10])
 high_failures_list_indexes = list()
 #choose how many address with the highest faulire you take from high_failures_list
-for failure_address in high_failures_list[:7]:
+for failure_address in high_failures_list[:9]:
     try:
         ix = address_list.index(failure_address)
     except:

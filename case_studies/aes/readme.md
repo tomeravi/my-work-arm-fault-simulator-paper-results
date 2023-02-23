@@ -15,8 +15,8 @@ Scripts :
 #####
 Flow:
 - generate_files.py -generate naked .s file and replacement .s file
-- run test.all and summaries_report.py
+- run test_all.py and summaries_report.py
 - add_ignore_labels_to_s.py - use the report of naked to created naked with ignore labels
-- run from generate_files.py just the replacement script with new .s file 
+- run from generate_files.py again so it will from the generate the new .s file 
 - run again test.all and summaries_report.py
 - examine results with count_and_present.py
