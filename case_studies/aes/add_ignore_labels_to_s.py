@@ -17,11 +17,13 @@ def get_most_vulnerable_addresses():
     counts_df["total"] = counts_df.sum(axis=1)
     counts_df = counts_df.sort_values("address")
     counts_df.columns.name = None
-    counts_df.index = counts_df.index+"_"
-    counts_df.to_csv("counts.csv") 
-    counts_df.index = counts_df.index.str.slice(0,-1)
-    #get the list of addresses of the highest number of total failures
-    lis = counts_df.sort_values("total",ascending=False)["total"].index.tolist()
+    #counts_df.index = counts_df.index+"_"
+    #counts_df.to_csv("counts.csv") 
+    #counts_df.index = counts_df.index.str.slice(0,-1)
+    #get the list of addresses of the highest number of Skip failures
+    lis = counts_df.sort_values("Skip",ascending=False)["Skip"].index.tolist()
+    print("####>>>>")
+    print(counts_df.sort_values("Skip",ascending=False))
     return lis
 
 
@@ -91,7 +93,7 @@ high_failures_list = get_most_vulnerable_addresses()
 print(high_failures_list[:10])
 high_failures_list_indexes = list()
 #choose how many address with the highest faulire you take from high_failures_list
-for failure_address in high_failures_list[:9]:
+for failure_address in high_failures_list[:20]:
     try:
         ix = address_list.index(failure_address)
     except:

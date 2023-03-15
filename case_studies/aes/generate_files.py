@@ -36,7 +36,7 @@ for a in ARCHS:
         control_flow_name = "files/2_control_flow_"+a+"_"+o+".s"
         combined_name = "files/3_combined_"+a+"_"+o+".s"
 
-        
+        #print("arm-none-eabi-gcc "+opts+" -ffixed-r5 -S aes.c -o " + unprotected_name)
         os.system("arm-none-eabi-gcc "+opts+" -ffixed-r5 -S aes.c -o " + unprotected_name)
         #copy this file for later refference 
         #os.system("cp "+unprotected_name +" " + unprotected_name+"_special_build_for_replacement")

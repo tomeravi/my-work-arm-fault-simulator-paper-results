@@ -14,14 +14,14 @@ def get_summary_graph(filename,sources_dir):
     raw_df.columns = ["address","op"]
     raw_df.address = raw_df.address.astype(str)
     raw_df = raw_df.sort_values("address")
-    raw_df.to_csv("raw.csv") 
+    #raw_df.to_csv("raw.csv") 
 
     counts_df = raw_df.groupby(raw_df.columns.tolist()).size().unstack()
     counts_df["total"] = counts_df.sum(axis=1)
     counts_df = counts_df.sort_values("address")
     counts_df.columns.name = None
     counts_df.index = counts_df.index+"_"
-    counts_df.to_csv("counts.csv") 
+    #counts_df.to_csv("counts.csv") 
     counts_df.index = counts_df.index.str.slice(0,-1)
 
     plt.close("all")
@@ -79,8 +79,8 @@ def get_summary_graph(filename,sources_dir):
     plt.savefig(file_path+"_counts.png")
 
     #cleaning step
-    os.remove("raw.csv")
-    os.remove("counts.csv")
+    #os.remove("raw.csv")
+    #os.remove("counts.csv")
 
 sources_dir="reports"
 for f in sorted(os.listdir(sources_dir)):
