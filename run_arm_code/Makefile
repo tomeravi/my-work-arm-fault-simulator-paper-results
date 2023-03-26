@@ -1,8 +1,8 @@
 ARMGNU ?= arm-none-eabi
 LIBSPEC=-L /usr/lib/arm-none-eabi/newlib
-COPS = -Wall -nostartfiles -ffreestanding -mcpu=arm926ej-s -specs=nano.specs -specs=nosys.specs
-
-all : main.hex main.bin main.elf
+COPS = -Wall -nostartfiles -ffreestanding  -specs=nano.specs  -specs=nosys.specs -march=armv7-m
+#COPS = -Wall -nostartfiles -Wpedantic -std=c11 -ffreestanding  -specs=nosys.specs
+all : clean main.hex main.bin main.elf
 
 clean :
 	rm -f *.o

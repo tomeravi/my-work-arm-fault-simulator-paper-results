@@ -8,7 +8,7 @@
     .eabi_attribute 30, 1
     .eabi_attribute 34, 1
     .eabi_attribute 18, 4
-    .file "bootloader.c"
+    .file "secure_boot.c"
     .text
     .align 1
     .global sha256
@@ -30,12 +30,10 @@ sha256:
     sub r5, sp, #336
     mov sp, r5
     mov sp, r5
-    str r0, [sp, #8] @ str r0, [sp, #8]
-    str r0, [sp, #8]
+    str r0, [sp, #4] @ str r0, [sp, #4]
+    str r0, [sp, #4]
     mov r7, r1 @ mov r7, r1
     mov r7, r1
-    str r1, [sp, #4] @ str r1, [sp, #4]
-    str r1, [sp, #4]
     str r2, [sp, #12] @ str r2, [sp, #12]
     str r2, [sp, #12]
     add r4, sp, #304 @ add r4, sp, #304
@@ -58,26 +56,24 @@ sha256:
     ldm r6, {r0, r1, r2, r3}
     stm r4, {r0, r1, r2, r3} @ stm r4, {r0, r1, r2, r3}
     stm r4, {r0, r1, r2, r3}
+    str r7, [sp, #8] @ str r7, [sp, #8]
+    str r7, [sp, #8]
     cmp r7, #0 @ cmp r7, #0
     cmp r7, #0
     beq .L3 @ beq .L3
     beq .L3
-    movs r3, #0 @ movs r3, #0
-    movs r3, #0
-    str r3, [sp] @ str r3, [sp]
-    str r3, [sp]
-    add lr, sp, #108 @ add lr, sp, #108
-    add lr, sp, #108
-    add r7, sp, #240 @ add r7, sp, #240
-    add r7, sp, #240
+    mov r8, #0 @ mov r8, #0
+    mov r8, #0
+    add ip, sp, #108 @ add ip, sp, #108
+    add ip, sp, #108
     ldr r3, .L20 @ ldr r3, .L20
     ldr r3, .L20
-    add r6, r3, #284 @ add r6, r3, #284
-    add r6, r3, #284
+    add r7, r3, #284 @ add r7, r3, #284
+    add r7, r3, #284
     add r1, sp, #16 @ add r1, sp, #16
     add r1, sp, #16
-    add ip, sp, #332 @ add ip, sp, #332
-    add ip, sp, #332
+    add lr, sp, #332 @ add lr, sp, #332
+    add lr, sp, #332
     b .L2 @ b .L2
     b .L2
 .L19:
@@ -95,8 +91,8 @@ sha256:
     mov r2, r5
     str r2, [sp, #32] @ str r2, [sp, #32]
     str r2, [sp, #32]
-    cmp sl, r6 @ cmp sl, r6
-    cmp sl, r6
+    cmp sb, r7 @ cmp sb, r7
+    cmp sb, r7
     beq .L18 @ beq .L18
     beq .L18
 .L7:
@@ -136,6 +132,16 @@ sha256:
     add r5, r2, r3
     mov r2, r5
     mov r2, r5
+    ldr r3, [sb, #4] @ ldr r3, [sb, #4]!
+    ldr r3, [sb, #4]
+    add r5, sb, #4 @ add sb, sb, #4
+    add r5, sb, #4
+    mov sb, r5
+    mov sb, r5
+    add r5, r2, r3 @ add r2, r2, r3
+    add r5, r2, r3
+    mov r2, r5
+    mov r2, r5
     ldr r3, [sl, #4] @ ldr r3, [sl, #4]!
     ldr r3, [sl, #4]
     add r5, sl, #4 @ add sl, sl, #4
@@ -146,40 +152,30 @@ sha256:
     add r5, r2, r3
     mov r2, r5
     mov r2, r5
-    ldr r3, [fp, #4] @ ldr r3, [fp, #4]!
-    ldr r3, [fp, #4]
-    add r5, fp, #4 @ add fp, fp, #4
-    add r5, fp, #4
-    mov fp, r5
-    mov fp, r5
-    add r5, r2, r3 @ add r2, r2, r3
-    add r5, r2, r3
-    mov r2, r5
-    mov r2, r5
-    ldr sb, [sp, #16] @ ldr sb, [sp, #16]
-    ldr sb, [sp, #16]
+    ldr fp, [sp, #16] @ ldr fp, [sp, #16]
+    ldr fp, [sp, #16]
     ldr r0, [sp, #20] @ ldr r0, [sp, #20]
     ldr r0, [sp, #20]
-    ldr r8, [sp, #24] @ ldr r8, [sp, #24]
-    ldr r8, [sp, #24]
-    ror r3, sb, #13 @ ror r3, sb, #13
-    ror r3, sb, #13
-    eor r5, r3, sb, ror #2 @ eor r3, r3, sb, ror #2
-    eor r5, r3, sb, ror #2
+    ldr r6, [sp, #24] @ ldr r6, [sp, #24]
+    ldr r6, [sp, #24]
+    ror r3, fp, #13 @ ror r3, fp, #13
+    ror r3, fp, #13
+    eor r5, r3, fp, ror #2 @ eor r3, r3, fp, ror #2
+    eor r5, r3, fp, ror #2
     mov r3, r5
     mov r3, r5
-    eor r5, r3, sb, ror #22 @ eor r3, r3, sb, ror #22
-    eor r5, r3, sb, ror #22
+    eor r5, r3, fp, ror #22 @ eor r3, r3, fp, ror #22
+    eor r5, r3, fp, ror #22
     mov r3, r5
     mov r3, r5
-    eor r4, r8, r0 @ eor r4, r8, r0
-    eor r4, r8, r0
-    and r5, r4, sb @ and r4, r4, sb
-    and r5, r4, sb
+    eor r4, r0, r6 @ eor r4, r0, r6
+    eor r4, r0, r6
+    and r5, r4, fp @ and r4, r4, fp
+    and r5, r4, fp
     mov r4, r5
     mov r4, r5
-    and r5, r0, r8 @ and r0, r0, r8
-    and r5, r0, r8
+    ands r5, r0, r6 @ ands r0, r0, r6
+    ands r5, r0, r6
     mov r0, r5
     mov r0, r5
     eors r5, r4, r0 @ eors r4, r4, r0
@@ -208,81 +204,77 @@ sha256:
     b .L19 @ b .L19
     b .L19
 .L18:
-    add r0, sp, #300 @ add r0, sp, #300
-    add r0, sp, #300
-    add r4, sp, #12 @ add r4, sp, #12
-    add r4, sp, #12
+    add r3, sp, #300 @ add r3, sp, #300
+    add r3, sp, #300
+    add r0, sp, #12 @ add r0, sp, #12
+    add r0, sp, #12
 .L8:
-    ldr r3, [r0, #4] @ ldr r3, [r0, #4]
-    ldr r3, [r0, #4]
-    ldr r2, [r4, #4] @ ldr r2, [r4, #4]!
-    ldr r2, [r4, #4]
-    add r5, r4, #4 @ add r4, r4, #4
-    add r5, r4, #4
-    mov r4, r5
-    mov r4, r5
-    add r5, r3, r2 @ add r3, r3, r2
-    add r5, r3, r2
+    ldr r2, [r3, #4] @ ldr r2, [r3, #4]!
+    ldr r2, [r3, #4]
+    add r5, r3, #4 @ add r3, r3, #4
+    add r5, r3, #4
     mov r3, r5
     mov r3, r5
-    str r3, [r0, #4] @ str r3, [r0, #4]!
-    str r3, [r0, #4]
+    ldr r4, [r0, #4] @ ldr r4, [r0, #4]!
+    ldr r4, [r0, #4]
     add r5, r0, #4 @ add r0, r0, #4
     add r5, r0, #4
     mov r0, r5
     mov r0, r5
-    cmp ip, r0 @ cmp ip, r0
-    cmp ip, r0
+    add r5, r2, r4 @ add r2, r2, r4
+    add r5, r2, r4
+    mov r2, r5
+    mov r2, r5
+    str r2, [r3] @ str r2, [r3]
+    str r2, [r3]
+    cmp r3, lr @ cmp r3, lr
+    cmp r3, lr
     bne .L8 @ bne .L8
     bne .L8
-    ldr r3, [sp] @ ldr r3, [sp]
-    ldr r3, [sp]
-    adds r5, r3, #64 @ adds r3, r3, #64
-    adds r5, r3, #64
-    mov r3, r5
-    mov r3, r5
-    str r3, [sp] @ str r3, [sp]
-    str r3, [sp]
-    ldr r2, [sp, #4] @ ldr r2, [sp, #4]
-    ldr r2, [sp, #4]
-    cmp r2, r3 @ cmp r2, r3
-    cmp r2, r3
+    add r5, r8, #64 @ add r8, r8, #64
+    add r5, r8, #64
+    mov r8, r5
+    mov r8, r5
+    ldr r3, [sp, #8] @ ldr r3, [sp, #8]
+    ldr r3, [sp, #8]
+    cmp r3, r8 @ cmp r3, r8
+    cmp r3, r8
     bls .L3 @ bls .L3
     bls .L3
 .L2:
-    ldr r3, [sp, #8] @ ldr r3, [sp, #8]
-    ldr r3, [sp, #8]
-    ldr r2, [sp] @ ldr r2, [sp]
-    ldr r2, [sp]
-    adds r0, r3, r2 @ adds r0, r3, r2
-    adds r0, r3, r2
-    add fp, sp, #44 @ add fp, sp, #44
-    add fp, sp, #44
-    mov r4, fp @ mov r4, fp
-    mov r4, fp
+    ldr r3, [sp, #4] @ ldr r3, [sp, #4]
+    ldr r3, [sp, #4]
+    add r0, r3, r8 @ add r0, r3, r8
+    add r0, r3, r8
+    add sl, sp, #44 @ add sl, sp, #44
+    add sl, sp, #44
+    add r2, sp, #48 @ add r2, sp, #48
+    add r2, sp, #48
+    mov r4, sl @ mov r4, sl
+    mov r4, sl
 .L4:
-    ldrb r2, [r0] @ ldrb r2, [r0]
-    ldrb r2, [r0]
+    ldrb r6, [r0] @ ldrb r6, [r0]
+    ldrb r6, [r0]
     ldrb r3, [r0, #1] @ ldrb r3, [r0, #1]
     ldrb r3, [r0, #1]
     lsls r5, r3, #16 @ lsls r3, r3, #16
     lsls r5, r3, #16
     mov r3, r5
     mov r3, r5
-    orr r5, r3, r2, lsl #24 @ orr r3, r3, r2, lsl #24
-    orr r5, r3, r2, lsl #24
+    orr r5, r3, r6, lsl #24 @ orr r3, r3, r6, lsl #24
+    orr r5, r3, r6, lsl #24
     mov r3, r5
     mov r3, r5
-    ldrb r2, [r0, #3] @ ldrb r2, [r0, #3]
-    ldrb r2, [r0, #3]
-    orrs r5, r3, r2 @ orrs r3, r3, r2
-    orrs r5, r3, r2
+    ldrb r6, [r0, #3] @ ldrb r6, [r0, #3]
+    ldrb r6, [r0, #3]
+    orrs r5, r3, r6 @ orrs r3, r3, r6
+    orrs r5, r3, r6
     mov r3, r5
     mov r3, r5
-    ldrb r2, [r0, #2] @ ldrb r2, [r0, #2]
-    ldrb r2, [r0, #2]
-    orr r5, r3, r2, lsl #8 @ orr r3, r3, r2, lsl #8
-    orr r5, r3, r2, lsl #8
+    ldrb r6, [r0, #2] @ ldrb r6, [r0, #2]
+    ldrb r6, [r0, #2]
+    orr r5, r3, r6, lsl #8 @ orr r3, r3, r6, lsl #8
+    orr r5, r3, r6, lsl #8
     mov r3, r5
     mov r3, r5
     str r3, [r4, #4] @ str r3, [r4, #4]!
@@ -295,65 +287,65 @@ sha256:
     adds r5, r0, #4
     mov r0, r5
     mov r0, r5
-    cmp r4, lr @ cmp r4, lr
-    cmp r4, lr
+    cmp r4, ip @ cmp r4, ip
+    cmp r4, ip
     bne .L4 @ bne .L4
     bne .L4
-    add r0, sp, #48 @ add r0, sp, #48
-    add r0, sp, #48
+    add sb, r2, #192 @ add sb, r2, #192
+    add sb, r2, #192
 .L5:
-    mov r8, r0 @ mov r8, r0
-    mov r8, r0
-    ldr r2, [r0, #56] @ ldr r2, [r0, #56]
-    ldr r2, [r0, #56]
-    ldr r4, [r0, #4] @ ldr r4, [r0, #4]!
-    ldr r4, [r0, #4]
-    add r5, r0, #4 @ add r0, r0, #4
-    add r5, r0, #4
+    mov r6, r2 @ mov r6, r2
+    mov r6, r2
+    ldr r0, [r2, #56] @ ldr r0, [r2, #56]
+    ldr r0, [r2, #56]
+    ldr r4, [r2, #4] @ ldr r4, [r2, #4]!
+    ldr r4, [r2, #4]
+    add r5, r2, #4 @ add r2, r2, #4
+    add r5, r2, #4
+    mov r2, r5
+    mov r2, r5
+    ror r3, r0, #19 @ ror r3, r0, #19
+    ror r3, r0, #19
+    eor r5, r3, r0, ror #17 @ eor r3, r3, r0, ror #17
+    eor r5, r3, r0, ror #17
+    mov r3, r5
+    mov r3, r5
+    eor r5, r3, r0, lsr #10 @ eor r3, r3, r0, lsr #10
+    eor r5, r3, r0, lsr #10
+    mov r3, r5
+    mov r3, r5
+    ldr r0, [r6, #36] @ ldr r0, [r6, #36]
+    ldr r0, [r6, #36]
+    ldr r5, [r6] @ ldr r6, [r6]
+    ldr r5, [r6]
+    mov r6, r5
+    mov r6, r5
+    add r5, r0, r6 @ add r0, r0, r6
+    add r5, r0, r6
     mov r0, r5
     mov r0, r5
-    ror r3, r2, #19 @ ror r3, r2, #19
-    ror r3, r2, #19
-    eor r5, r3, r2, ror #17 @ eor r3, r3, r2, ror #17
-    eor r5, r3, r2, ror #17
+    add r5, r3, r0 @ add r3, r3, r0
+    add r5, r3, r0
     mov r3, r5
     mov r3, r5
-    eor r5, r3, r2, lsr #10 @ eor r3, r3, r2, lsr #10
-    eor r5, r3, r2, lsr #10
+    ror r0, r4, #18 @ ror r0, r4, #18
+    ror r0, r4, #18
+    eor r5, r0, r4, ror #7 @ eor r0, r0, r4, ror #7
+    eor r5, r0, r4, ror #7
+    mov r0, r5
+    mov r0, r5
+    eor r5, r0, r4, lsr #3 @ eor r0, r0, r4, lsr #3
+    eor r5, r0, r4, lsr #3
+    mov r0, r5
+    mov r0, r5
+    add r5, r3, r0 @ add r3, r3, r0
+    add r5, r3, r0
     mov r3, r5
     mov r3, r5
-    ldr r2, [r8, #36] @ ldr r2, [r8, #36]
-    ldr r2, [r8, #36]
-    ldr r5, [r8] @ ldr r8, [r8]
-    ldr r5, [r8]
-    mov r8, r5
-    mov r8, r5
-    add r5, r2, r8 @ add r2, r2, r8
-    add r5, r2, r8
-    mov r2, r5
-    mov r2, r5
-    add r5, r3, r2 @ add r3, r3, r2
-    add r5, r3, r2
-    mov r3, r5
-    mov r3, r5
-    ror r2, r4, #18 @ ror r2, r4, #18
-    ror r2, r4, #18
-    eor r5, r2, r4, ror #7 @ eor r2, r2, r4, ror #7
-    eor r5, r2, r4, ror #7
-    mov r2, r5
-    mov r2, r5
-    eor r5, r2, r4, lsr #3 @ eor r2, r2, r4, lsr #3
-    eor r5, r2, r4, lsr #3
-    mov r2, r5
-    mov r2, r5
-    add r5, r3, r2 @ add r3, r3, r2
-    add r5, r3, r2
-    mov r3, r5
-    mov r3, r5
-    str r3, [r0, #60] @ str r3, [r0, #60]
-    str r3, [r0, #60]
-    cmp r0, r7 @ cmp r0, r7
-    cmp r0, r7
+    str r3, [r2, #60] @ str r3, [r2, #60]
+    str r3, [r2, #60]
+    cmp r2, sb @ cmp r2, sb
+    cmp r2, sb
     bne .L5 @ bne .L5
     bne .L5
     ldr r3, [sp, #304] @ ldr r3, [sp, #304]
@@ -390,8 +382,8 @@ sha256:
     str r3, [sp, #44]
     ldr r3, .L20 @ ldr r3, .L20
     ldr r3, .L20
-    add sl, r3, #28 @ add sl, r3, #28
-    add sl, r3, #28
+    add sb, r3, #28 @ add sb, r3, #28
+    add sb, r3, #28
     b .L7 @ b .L7
     b .L7
 .L3:
@@ -520,41 +512,35 @@ verify_and_run_firmware:
     b sha256
     b sha256
 .L1001:
-    ldrb r2, [sp] @ ldrb r2, [sp]
-    ldrb r2, [sp]
-    ldrb r3, [r4] @ ldrb r3, [r4]
-    ldrb r3, [r4]
-    cmp r2, r3 @ cmp r2, r3
-    cmp r2, r3
-    bne .L27 @ bne .L27
-    bne .L27
-    mov r3, sp @ mov r3, sp
-    mov r3, sp
-    mov r2, r4 @ mov r2, r4
-    mov r2, r4
-    add r4, sp, #31 @ add r4, sp, #31
-    add r4, sp, #31
-.L29:
+    mov r1, sp @ mov r1, sp
+    mov r1, sp
+    subs r3, r4, #1 @ subs r3, r4, #1
+    subs r3, r4, #1
+    adds r5, r4, #31 @ adds r4, r4, #31
+    adds r5, r4, #31
+    mov r4, r5
+    mov r4, r5
+.L28:
+    ldrb r2, [r1] @ ldrb r2, [r1], #1
+    ldrb r2, [r1]
+    add r5, r1, #1 @ add r1, r1, #1
+    add r5, r1, #1
+    mov r1, r5
+    mov r1, r5
     ldrb r0, [r3, #1] @ ldrb r0, [r3, #1]!
     ldrb r0, [r3, #1]
     add r5, r3, #1 @ add r3, r3, #1
     add r5, r3, #1
     mov r3, r5
     mov r3, r5
-    ldrb r1, [r2, #1] @ ldrb r1, [r2, #1]!
-    ldrb r1, [r2, #1]
-    add r5, r2, #1 @ add r2, r2, #1
-    add r5, r2, #1
-    mov r2, r5
-    mov r2, r5
-    cmp r0, r1 @ cmp r0, r1
-    cmp r0, r1
-    bne .L27 @ bne .L27
-    bne .L27
+    cmp r0, r2 @ cmp r0, r2
+    cmp r0, r2
+    bne .L31 @ bne .L31
+    bne .L31
     cmp r3, r4 @ cmp r3, r4
     cmp r3, r4
-    bne .L29 @ bne .L29
-    bne .L29
+    bne .L28 @ bne .L28
+    bne .L28
     adr lr, .L1002 @ bl execute_firmware
     adr lr, .L1002
     orr lr, #1
@@ -562,7 +548,7 @@ verify_and_run_firmware:
     b execute_firmware
     b execute_firmware
 .L1002:
-.L27:
+.L31:
     adr lr, .L1003 @ bl report_error
     adr lr, .L1003
     orr lr, #1
@@ -650,4 +636,4 @@ constants:
     .word -1538233109
     .word -1090935817
     .word -965641998
-    .ident "GCC: (15:6.3.1+svn253039-1build1) 6.3.1 20170620"
+    .ident "GCC: (15:9-2019-q4-0ubuntu1) 9.2.1 20191025 (release) [ARM/arm-9-branch revision 277599]"

@@ -11,16 +11,6 @@ void print_uart0(const char *s) {
   }
 }
 
-void print_hex_uart0(u8 *s, int len) {
-  char str[4];
-  while (len > 0) { /* Loop until end of string */
-    // sprintf(str, "%X", *s);
-    *UART0DR = (unsigned int)(*str);       /* Transmit char */
-    *UART0DR = (unsigned int)(*(str + 1)); /* Transmit char */
-    len--;                                 /* Next char */
-  }
-}
-
 u8 plaintext1[16] = {
     0x67, 0x45, 0x8b, 0x6b, 0x69, 0x98, 0x3c, 0x64,
     0x51, 0xdc, 0xb0, 0x74, 0x4a, 0x94, 0xe8, 0x2a,
@@ -49,7 +39,7 @@ int mymemcmp(u8 *a, u8 *b, int len) {
   else
     return 1;
 }
-
+/*
 __int64_t get_ticks() {
   unsigned int pmccntr = 0;
   unsigned int pmuseren = 0;
@@ -67,25 +57,20 @@ __int64_t get_ticks() {
   }
   return -11;
 }
+*/
 #include <sys/time.h>
+
 void c_entry() {
   char buf[16];
   static int rawtime = 0;
-  struct timeval tv;
+  // struct timeval tv;
 
-  // print_uart0("Hello world!\n");
   print_uart0("encrypt...\n");
-  // print_hex_uart0(plaintext, 16);
-  AES_ECB_encrypt(key, plaintext);
-  // print_hex_uart0(plaintext, 16);
-#if defined(__ARM_ARCH)
-
-#if (__ARM_ARCH >= 6)
-  ggg
-#endif
-#endif
-      rawtime = gettimeofday(&tv, NULL);  // get_ticks();
-  sprintf(buf, "%d\n", __ARM_ARCH);
+  // AES_ECB_encrypt(key, plaintext);
+  //  rawtime = gettimeofday(&tv, NULL);  // get_ticks();
+  // sprintf(buf, "rawtime: %d\n", rawtime);
+  // print_uart0((const char *)buf);
+  sprintf(buf, "arch: %d\n", __ARM_ARCH);
   print_uart0((const char *)buf);
 
   if (mymemcmp(ciphertext, plaintext, 16) == 0) {

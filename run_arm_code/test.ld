@@ -10,5 +10,5 @@ SECTIONS
  . = . + 0x1000; /* 4kB of stack memory */
  stack_top = .;
  /* End of user data. Heap starts from here */
- end = . ;
+ /*end = . ;*/
 }
