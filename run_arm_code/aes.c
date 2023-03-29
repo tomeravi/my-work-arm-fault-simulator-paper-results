@@ -170,14 +170,11 @@ __attribute__((noreturn, noinline)) void report_error() {
 // raised an error by simply waiting for the second call of the function
 __attribute__((noreturn, noinline)) void report_done() { report_done(); }
 
-void print_uart0(const char* s);
-
 void AES_ECB_encrypt(const u8 master_key[16], u8 buf[16]) {
-    u8 round_keys[176];
-  print_uart0("in func\n");
+  u8 round_keys[176];
+  
   key_expansion(round_keys, master_key);
   cipher((state_t*)buf, round_keys);
 
-  print_uart0("func done\n");
   // report_done();
 }
