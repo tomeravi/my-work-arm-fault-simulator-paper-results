@@ -22,7 +22,7 @@ u8 ciphertext[16] = {
     0x64, 0xaf, 0x54, 0x4f, 0x08, 0x02, 0x92, 0x2c,
 };
 
-volatile unsigned int *const UART0DR = (unsigned int *)0x101f1000;
+volatile unsigned int *const UART0DR = (unsigned int *)0x4000c000;
 volatile unsigned int *const RTCADDR = (unsigned int *)0x101E8000;
 
 void AES_ECB_encrypt(const u8 master_key[16], u8 buf[16]);
@@ -62,18 +62,19 @@ int mymemcmp(u8 *a, u8 *b, int len) {
 
 void c_entry() {
   char buf[16];
-  int i,len = 1000000;
+  int i,len = 1;
   unsigned int t1,t2;
 
   print_uart0("encrypt...\n");
   //start time
   t1 = *RTCADDR;   
   //key[0] = 0x0;
-  
+  print_uart0("1\n");
   for (i = 0; i < len; i++) {
+    print_uart0("2\n");
     AES_ECB_encrypt(key, plaintext);
   }
-
+  print_uart0("3\n");
   //end time
   t2 = *RTCADDR;
   printf("time: %d-%d = %d\n",t2,t1,t2-t1); 
@@ -83,5 +84,5 @@ void c_entry() {
   } else {
     print_uart0("not equal\n");
   }
-  // exit(0);
+  while(1);
 }
