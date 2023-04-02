@@ -11,174 +11,275 @@
 	.file	"aes.c"
 	.text
 	.align	1
-	.global	sha256
 	.syntax unified
 	.thumb
 	.thumb_func
 	.fpu softvfp
-	.type	sha256, %function
-sha256:
-	@ args = 0, pretend = 0, frame = 336
+	.type	key_expansion, %function
+key_expansion:
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 0, uses_anonymous_args = 0
+	push	{r4, r6, r7, lr}
+	mov	r2, r0
+	add	r4, r1, #16
+.L2:
+	ldrb	r3, [r1]	@ zero_extendqisi2
+	strb	r3, [r0]
+	ldrb	r3, [r1, #1]	@ zero_extendqisi2
+	strb	r3, [r0, #1]
+	ldrb	r3, [r1, #2]	@ zero_extendqisi2
+	strb	r3, [r0, #2]
+	ldrb	r3, [r1, #3]	@ zero_extendqisi2
+	strb	r3, [r0, #3]
+	adds	r1, r1, #4
+	adds	r0, r0, #4
+	cmp	r1, r4
+	bne	.L2
+	movs	r7, #4
+	ldr	ip, .L9
+	b	.L4
+.L3:
+	ldrb	lr, [r3]	@ zero_extendqisi2
+	eor	r1, r1, lr
+	strb	r1, [r3, #16]
+	ldrb	r1, [r3, #1]	@ zero_extendqisi2
+	eors	r6, r6, r1
+	strb	r6, [r3, #17]
+	ldrb	r1, [r3, #2]	@ zero_extendqisi2
+	eors	r4, r4, r1
+	strb	r4, [r3, #18]
+	ldrb	r1, [r3, #3]	@ zero_extendqisi2
+	eors	r0, r0, r1
+	strb	r0, [r3, #19]
+	adds	r7, r7, #1
+	adds	r2, r2, #4
+	cmp	r7, #44
+	beq	.L8
+.L4:
+	mov	r3, r2
+	ldrb	r1, [r2, #12]	@ zero_extendqisi2
+	ldrb	r6, [r2, #13]	@ zero_extendqisi2
+	ldrb	r4, [r2, #14]	@ zero_extendqisi2
+	ldrb	r0, [r2, #15]	@ zero_extendqisi2
+	tst	r7, #3
+	bne	.L3
+	ldrb	lr, [ip, r6]	@ zero_extendqisi2
+	ldrb	r6, [ip, r4]	@ zero_extendqisi2
+	ldrb	r4, [ip, r0]	@ zero_extendqisi2
+	ldrb	r0, [ip, r1]	@ zero_extendqisi2
+	add	r1, ip, r7, lsr #2
+	ldrb	r1, [r1, #256]	@ zero_extendqisi2
+	eor	r1, lr, r1
+	b	.L3
+.L8:
+	pop	{r4, r6, r7, pc}
+.L10:
+	.align	2
+.L9:
+	.word	.LANCHOR0
+	.size	key_expansion, .-key_expansion
+	.align	1
+	.syntax unified
+	.thumb
+	.thumb_func
+	.fpu softvfp
+	.type	add_round_key, %function
+add_round_key:
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 0, uses_anonymous_args = 0
+	@ link register save eliminated.
+	push	{r4, r6, r7}
+	lsls	r0, r0, #4
+	adds	r6, r1, #4
+	add	ip, r1, #20
+.L12:
+	subs	r3, r6, #4
+	adds	r4, r2, r0
+.L13:
+	ldrb	r1, [r3]	@ zero_extendqisi2
+	ldrb	r7, [r4], #1	@ zero_extendqisi2
+	eors	r1, r1, r7
+	strb	r1, [r3], #1
+	cmp	r3, r6
+	bne	.L13
+	adds	r0, r0, #4
+	adds	r6, r6, #4
+	cmp	r6, ip
+	bne	.L12
+	pop	{r4, r6, r7}
+	bx	lr
+	.size	add_round_key, .-add_round_key
+	.align	1
+	.syntax unified
+	.thumb
+	.thumb_func
+	.fpu softvfp
+	.type	cipher, %function
+cipher:
+	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 0, uses_anonymous_args = 0
 	push	{r4, r6, r7, r8, r9, r10, fp, lr}
-	sub	sp, sp, #336
-	str	r0, [sp, #4]
-	mov	r7, r1
-	str	r2, [sp, #12]
-	add	r4, sp, #304
-	ldr	r6, .L20
-	ldmia	r6!, {r0, r1, r2, r3}
-	stmia	r4!, {r0, r1, r2, r3}
-	ldm	r6, {r0, r1, r2, r3}
-	stm	r4, {r0, r1, r2, r3}
-	str	r7, [sp, #8]
-	cmp	r7, #0
-	beq	.L3
-	mov	r8, #0
-	add	ip, sp, #108
-	ldr	r3, .L20
-	add	r7, r3, #284
-	add	r1, sp, #16
-	add	lr, sp, #332
-	b	.L2
-.L19:
-	add	r4, r4, r2
-	str	r4, [sp, #16]
-	ldr	r3, [sp, #32]
-	add	r2, r2, r3
-	str	r2, [sp, #32]
-	cmp	r9, r7
-	beq	.L18
-.L7:
-	ldr	r4, [sp, #32]
-	ldr	r3, [sp, #40]
-	bic	r2, r3, r4
-	ldr	r0, [sp, #36]
-	ands	r0, r0, r4
-	eors	r2, r2, r0
-	ror	r3, r4, #11
-	eor	r3, r3, r4, ror #6
-	eor	r3, r3, r4, ror #25
-	add	r2, r2, r3
-	ldr	r3, [sp, #44]
-	add	r2, r2, r3
-	ldr	r3, [r9, #4]!
-	add	r2, r2, r3
-	ldr	r3, [r10, #4]!
-	add	r2, r2, r3
-	ldr	fp, [sp, #16]
-	ldr	r0, [sp, #20]
-	ldr	r6, [sp, #24]
-	ror	r3, fp, #13
-	eor	r3, r3, fp, ror #2
-	eor	r3, r3, fp, ror #22
-	eor	r4, r0, r6
-	and	r4, r4, fp
-	ands	r0, r0, r6
-	eors	r4, r4, r0
-	add	r4, r4, r3
-	add	r3, sp, #44
-.L6:
-	ldr	r0, [r3, #-4]
-	str	r0, [r3], #-4
-	cmp	r3, r1
-	bne	.L6
-	b	.L19
+	sub	sp, sp, #16
+	mov	r4, r0
+	mov	r2, r1
+	str	r1, [sp, #8]
+	mov	r1, r0
+	movs	r0, #0
+	bl	add_round_key
+	movs	r6, #1
+	adds	r3, r4, #4
+	str	r3, [sp, #4]
+	b	.L18
+.L32:
+	ldr	r2, [sp, #8]
+	mov	r1, r4
+	mov	r0, r6
+	bl	add_round_key
+	adds	r6, r6, #1
+	uxtb	r6, r6
+	cmp	r6, #10
+	beq	.L31
 .L18:
-	add	r3, sp, #300
-	add	r0, sp, #12
-.L8:
-	ldr	r2, [r3, #4]!
-	ldr	r4, [r0, #4]!
-	add	r2, r2, r4
-	str	r2, [r3]
-	cmp	r3, lr
-	bne	.L8
-	add	r8, r8, #64
-	ldr	r3, [sp, #8]
-	cmp	r3, r8
-	bls	.L3
-.L2:
+	str	r4, [sp, #12]
+	mov	r2, r4
+.L23:
+	movs	r3, #0
+.L19:
+	ldrb	r1, [r2, r3, lsl #2]	@ zero_extendqisi2
+	ldr	r0, .L33
+	ldrb	r1, [r0, r1]	@ zero_extendqisi2
+	strb	r1, [r2, r3, lsl #2]
+	adds	r3, r3, #1
+	cmp	r3, #4
+	bne	.L19
+	adds	r2, r2, #1
 	ldr	r3, [sp, #4]
-	add	r0, r3, r8
-	add	r10, sp, #44
-	add	r2, sp, #48
-	mov	r4, r10
-.L4:
-	ldrb	r6, [r0]	@ zero_extendqisi2
-	ldrb	r3, [r0, #1]	@ zero_extendqisi2
-	lsls	r3, r3, #16
-	orr	r3, r3, r6, lsl #24
-	ldrb	r6, [r0, #3]	@ zero_extendqisi2
-	orrs	r3, r3, r6
-	ldrb	r6, [r0, #2]	@ zero_extendqisi2
-	orr	r3, r3, r6, lsl #8
-	str	r3, [r4, #4]!
-	adds	r0, r0, #4
-	cmp	r4, ip
-	bne	.L4
-	add	r9, r2, #192
-.L5:
-	mov	r6, r2
-	ldr	r0, [r2, #56]
-	ldr	r4, [r2, #4]!
-	ror	r3, r0, #19
-	eor	r3, r3, r0, ror #17
-	eor	r3, r3, r0, lsr #10
-	ldr	r0, [r6, #36]
-	ldr	r6, [r6]
-	add	r0, r0, r6
-	add	r3, r3, r0
-	ror	r0, r4, #18
-	eor	r0, r0, r4, ror #7
-	eor	r0, r0, r4, lsr #3
-	add	r3, r3, r0
-	str	r3, [r2, #60]
-	cmp	r2, r9
-	bne	.L5
-	ldr	r3, [sp, #304]
-	str	r3, [sp, #16]
-	ldr	r3, [sp, #308]
-	str	r3, [sp, #20]
-	ldr	r3, [sp, #312]
-	str	r3, [sp, #24]
-	ldr	r3, [sp, #316]
-	str	r3, [sp, #28]
-	ldr	r3, [sp, #320]
-	str	r3, [sp, #32]
-	ldr	r3, [sp, #324]
-	str	r3, [sp, #36]
-	ldr	r3, [sp, #328]
-	str	r3, [sp, #40]
-	ldr	r3, [sp, #332]
-	str	r3, [sp, #44]
-	ldr	r3, .L20
-	add	r9, r3, #28
-	b	.L7
-.L3:
-	add	r1, sp, #300
-	ldr	r3, [sp, #12]
-	add	r0, sp, #332
-.L9:
-	ldr	r2, [r1, #4]!
-	lsrs	r4, r2, #24
-	strb	r4, [r3]
-	lsrs	r4, r2, #16
-	strb	r4, [r3, #1]
-	lsrs	r4, r2, #8
-	strb	r4, [r3, #2]
-	strb	r2, [r3, #3]
-	adds	r3, r3, #4
-	cmp	r1, r0
-	bne	.L9
-	add	sp, sp, #336
+	cmp	r2, r3
+	bne	.L23
+	ldrb	r3, [r4, #1]	@ zero_extendqisi2
+	ldrb	r2, [r4, #5]	@ zero_extendqisi2
+	strb	r2, [r4, #1]
+	ldrb	r2, [r4, #9]	@ zero_extendqisi2
+	strb	r2, [r4, #5]
+	ldrb	r2, [r4, #13]	@ zero_extendqisi2
+	strb	r2, [r4, #9]
+	strb	r3, [r4, #13]
+	ldrb	r3, [r4, #2]	@ zero_extendqisi2
+	ldrb	r2, [r4, #10]	@ zero_extendqisi2
+	strb	r2, [r4, #2]
+	strb	r3, [r4, #10]
+	ldrb	r3, [r4, #6]	@ zero_extendqisi2
+	ldrb	r2, [r4, #14]	@ zero_extendqisi2
+	strb	r2, [r4, #6]
+	strb	r3, [r4, #14]
+	ldrb	r3, [r4, #3]	@ zero_extendqisi2
+	ldrb	r2, [r4, #15]	@ zero_extendqisi2
+	strb	r2, [r4, #3]
+	ldrb	r2, [r4, #11]	@ zero_extendqisi2
+	strb	r2, [r4, #15]
+	ldrb	r2, [r4, #7]	@ zero_extendqisi2
+	strb	r2, [r4, #11]
+	strb	r3, [r4, #7]
+	add	r10, r4, #16
+	mov	r2, r4
+.L21:
+	ldrb	r3, [r2]	@ zero_extendqisi2
+	ldrb	r1, [r2, #1]	@ zero_extendqisi2
+	eor	r9, r3, r1
+	ldrb	lr, [r2, #2]	@ zero_extendqisi2
+	ldrb	r0, [r2, #3]	@ zero_extendqisi2
+	eor	r8, lr, r0
+	eor	r7, r9, r8
+	lsr	ip, r9, #7
+	lsl	fp, ip, #1
+	add	ip, ip, fp
+	add	ip, ip, ip, lsl #3
+	eor	ip, ip, r9, lsl #1
+	eor	r9, r3, r7
+	eor	ip, ip, r9
+	strb	ip, [r2]
+	eor	r9, r1, lr
+	lsr	ip, r9, #7
+	lsl	fp, ip, #1
+	add	ip, ip, fp
+	add	ip, ip, ip, lsl #3
+	eor	ip, ip, r9, lsl #1
+	eors	r1, r1, r7
+	eor	ip, ip, r1
+	strb	ip, [r2, #1]
+	lsr	r1, r8, #7
+	lsl	ip, r1, #1
+	add	r1, r1, ip
+	add	r1, r1, r1, lsl #3
+	eor	r1, r1, r8, lsl #1
+	eor	lr, lr, r7
+	eor	r1, r1, lr
+	strb	r1, [r2, #2]
+	eor	r1, r3, r0
+	lsrs	r3, r1, #7
+	lsl	ip, r3, #1
+	add	r3, r3, ip
+	add	r3, r3, r3, lsl #3
+	eor	r3, r3, r1, lsl #1
+	eors	r0, r0, r7
+	eors	r3, r3, r0
+	strb	r3, [r2, #3]
+	adds	r2, r2, #4
+	cmp	r2, r10
+	bne	.L21
+	b	.L32
+.L31:
+	ldr	r10, [sp, #12]
+	ldr	r1, .L33
+	ldr	r0, [sp, #4]
+.L22:
+	movs	r3, #0
+.L24:
+	ldrb	r2, [r10, r3, lsl #2]	@ zero_extendqisi2
+	ldrb	r2, [r1, r2]	@ zero_extendqisi2
+	strb	r2, [r10, r3, lsl #2]
+	adds	r3, r3, #1
+	cmp	r3, #4
+	bne	.L24
+	add	r10, r10, #1
+	cmp	r10, r0
+	bne	.L22
+	ldrb	r3, [r4, #1]	@ zero_extendqisi2
+	ldrb	r2, [r4, #5]	@ zero_extendqisi2
+	strb	r2, [r4, #1]
+	ldrb	r2, [r4, #9]	@ zero_extendqisi2
+	strb	r2, [r4, #5]
+	ldrb	r2, [r4, #13]	@ zero_extendqisi2
+	strb	r2, [r4, #9]
+	strb	r3, [r4, #13]
+	ldrb	r3, [r4, #2]	@ zero_extendqisi2
+	ldrb	r2, [r4, #10]	@ zero_extendqisi2
+	strb	r2, [r4, #2]
+	strb	r3, [r4, #10]
+	ldrb	r3, [r4, #6]	@ zero_extendqisi2
+	ldrb	r2, [r4, #14]	@ zero_extendqisi2
+	strb	r2, [r4, #6]
+	strb	r3, [r4, #14]
+	ldrb	r3, [r4, #3]	@ zero_extendqisi2
+	ldrb	r2, [r4, #15]	@ zero_extendqisi2
+	strb	r2, [r4, #3]
+	ldrb	r2, [r4, #11]	@ zero_extendqisi2
+	strb	r2, [r4, #15]
+	ldrb	r2, [r4, #7]	@ zero_extendqisi2
+	strb	r2, [r4, #11]
+	strb	r3, [r4, #7]
+	ldr	r2, [sp, #8]
+	mov	r1, r4
+	movs	r0, #10
+	bl	add_round_key
+	add	sp, sp, #16
 	@ sp needed
 	pop	{r4, r6, r7, r8, r9, r10, fp, pc}
-.L21:
+.L34:
 	.align	2
-.L20:
+.L33:
 	.word	.LANCHOR0
-	.size	sha256, .-sha256
+	.size	cipher, .-cipher
 	.align	1
 	.global	report_error
 	.syntax unified
@@ -191,8 +292,8 @@ report_error:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
 	@ link register save eliminated.
-.L23:
-	b	.L23
+.L36:
+	b	.L36
 	.size	report_error, .-report_error
 	.align	1
 	.global	report_done
@@ -206,7 +307,7 @@ report_done:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
 	push	{r3, lr}
-	@bl	report_done
+	bl	report_done
 	.size	report_done, .-report_done
 	.align	1
 	.global	AES_ECB_encrypt
@@ -216,104 +317,48 @@ report_done:
 	.fpu softvfp
 	.type	AES_ECB_encrypt, %function
 AES_ECB_encrypt:
-	@ args = 0, pretend = 0, frame = 32
+	@ Volatile: function does not return.
+	@ args = 0, pretend = 0, frame = 176
 	@ frame_needed = 0, uses_anonymous_args = 0
-	push	{r4, lr}
-	sub	sp, sp, #32
-	mov	r4, r2
-	mov	r2, sp
-	bl	sha256
+@	push	{lr}
+@	sub	sp, sp, #180
+	push	{r4, lr}      @instead of push	{lr}
+	sub	sp, sp, #176  @instead of sub	sp, sp, #180
+	mov	r4, r1
+	mov	r1, r0
+	mov	r0, sp
+	bl	key_expansion
 	mov	r1, sp
-	subs	r3, r4, #1
-	adds	r4, r4, #31
-.L28:
-	ldrb	r2, [r1], #1	@ zero_extendqisi2
-	ldrb	r0, [r3, #1]!	@ zero_extendqisi2
-	cmp	r0, r2
-	bne	.L31
-	cmp	r3, r4
-	bne	.L28
-	bl	report_done
-.L31:
-	bl	report_error
+	mov	r0, r4
+	bl	cipher
+	@bl	report_done
+	add	sp, sp, #176 @instead of bl	report_done
+	@ sp needed
+	pop	{r4, pc}     @instead of bl	report_done
 	.size	AES_ECB_encrypt, .-AES_ECB_encrypt
 	.section	.rodata
 	.align	2
 	.set	.LANCHOR0,. + 0
-.LC0:
-	.word	1779033703
-	.word	-1150833019
-	.word	1013904242
-	.word	-1521486534
-	.word	1359893119
-	.word	-1694144372
-	.word	528734635
-	.word	1541459225
-	.type	constants, %object
-	.size	constants, 256
-constants:
-	.word	1116352408
-	.word	1899447441
-	.word	-1245643825
-	.word	-373957723
-	.word	961987163
-	.word	1508970993
-	.word	-1841331548
-	.word	-1424204075
-	.word	-670586216
-	.word	310598401
-	.word	607225278
-	.word	1426881987
-	.word	1925078388
-	.word	-2132889090
-	.word	-1680079193
-	.word	-1046744716
-	.word	-459576895
-	.word	-272742522
-	.word	264347078
-	.word	604807628
-	.word	770255983
-	.word	1249150122
-	.word	1555081692
-	.word	1996064986
-	.word	-1740746414
-	.word	-1473132947
-	.word	-1341970488
-	.word	-1084653625
-	.word	-958395405
-	.word	-710438585
-	.word	113926993
-	.word	338241895
-	.word	666307205
-	.word	773529912
-	.word	1294757372
-	.word	1396182291
-	.word	1695183700
-	.word	1986661051
-	.word	-2117940946
-	.word	-1838011259
-	.word	-1564481375
-	.word	-1474664885
-	.word	-1035236496
-	.word	-949202525
-	.word	-778901479
-	.word	-694614492
-	.word	-200395387
-	.word	275423344
-	.word	430227734
-	.word	506948616
-	.word	659060556
-	.word	883997877
-	.word	958139571
-	.word	1322822218
-	.word	1537002063
-	.word	1747873779
-	.word	1955562222
-	.word	2024104815
-	.word	-2067236844
-	.word	-1933114872
-	.word	-1866530822
-	.word	-1538233109
-	.word	-1090935817
-	.word	-965641998
+	.type	sbox, %object
+	.size	sbox, 256
+sbox:
+	.ascii	"c|w{\362ko\3050\001g+\376\327\253v\312\202\311}\372"
+	.ascii	"YG\360\255\324\242\257\234\244r\300\267\375\223&6?\367"
+	.ascii	"\3144\245\345\361q\3301\025\004\307#\303\030\226\005"
+	.ascii	"\232\007\022\200\342\353'\262u\011\203,\032\033nZ\240"
+	.ascii	"R;\326\263)\343/\204S\321\000\355 \374\261[j\313\276"
+	.ascii	"9JLX\317\320\357\252\373CM3\205E\371\002\177P<\237\250"
+	.ascii	"Q\243@\217\222\2358\365\274\266\332!\020\377\363\322"
+	.ascii	"\315\014\023\354_\227D\027\304\247~=d]\031s`\201O\334"
+	.ascii	"\"*\220\210F\356\270\024\336^\013\333\3402:\012I\006"
+	.ascii	"$\\\302\323\254b\221\225\344y\347\3107m\215\325N\251"
+	.ascii	"lV\364\352ez\256\010\272x%.\034\246\264\306\350\335"
+	.ascii	"t\037K\275\213\212p>\265fH\003\366\016a5W\271\206\301"
+	.ascii	"\035\236\341\370\230\021i\331\216\224\233\036\207\351"
+	.ascii	"\316U(\337\214\241\211\015\277\346BhA\231-\017\260T"
+	.ascii	"\273\026"
+	.type	rcon, %object
+	.size	rcon, 11
+rcon:
+	.ascii	"\215\001\002\004\010\020 @\200\0336"
 	.ident	"GCC: (15:9-2019-q4-0ubuntu1) 9.2.1 20191025 (release) [ARM/arm-9-branch revision 277599]"
