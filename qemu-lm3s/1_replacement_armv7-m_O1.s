@@ -687,16 +687,20 @@ AES_ECB_encrypt:
     @ Volatile: function does not return.
     @ args = 0, pretend = 0, frame = 176
     @ frame_needed = 0, uses_anonymous_args = 0
-    stmdb sp, {lr} @ stmdb sp!, {lr}
-    stmdb sp, {lr}
-    sub r5, sp, #4
-    sub r5, sp, #4
-    mov sp, r5
-    mov sp, r5
-    sub r5, sp, #180 @ sub sp, sp, #180
-    sub r5, sp, #180
-    mov sp, r5
-    mov sp, r5
+
+@    stmdb sp, {lr} @ stmdb sp!, {lr}
+@    stmdb sp, {lr}
+@    sub r5, sp, #4
+@   sub r5, sp, #4
+@   mov sp, r5
+@    mov sp, r5
+@    sub r5, sp, #180 @ sub sp, sp, #180
+@    sub r5, sp, #180
+@    mov sp, r5
+@    mov sp, r5
+	push	{r4, lr} @Tomer - instead of 10 lines above
+	sub	sp, sp, #176 @Tomer - instead of 10 lines above
+
     mov r4, r1 @ mov r4, r1
     mov r4, r1
     mov r1, r0 @ mov r1, r0
@@ -721,12 +725,15 @@ AES_ECB_encrypt:
     b cipher
     b cipher
 .L1005:
-    adr lr, .L1006 @ bl report_done
-    adr lr, .L1006
-    orr lr, #1
-    orr lr, #1
-    b report_done
-    b report_done
+@    adr lr, .L1006 @ bl report_done
+@    adr lr, .L1006
+@    orr lr, #1
+@    orr lr, #1
+@    b report_done
+@    b report_done
+	add	sp, sp, #176 @Tomer - instead of 6 lines above
+	@ sp needed      @Tomer - instead of 6 lines above
+	pop	{r4, pc}
 .L1006:
     .size AES_ECB_encrypt, .-AES_ECB_encrypt
     .section .rodata
