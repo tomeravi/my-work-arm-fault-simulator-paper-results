@@ -17,8 +17,8 @@ set(SIZE arm-none-eabi-size)
 SET(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/gcc_lm3s.ld)
 
 SET(COMMON_FLAGS
-    "-mcpu=cortex-m3 -mthumb -mthumb-interwork -ffunction-sections -fdata-sections -Og\
-    -g -fno-common -fmessage-length=0 -specs=nosys.specs -specs=nano.specs")
+    "-mcpu=cortex-m3 -mthumb -mthumb-interwork -ffunction-sections -fdata-sections \
+     -fno-common -fmessage-length=0 -specs=nosys.specs -specs=nano.specs")
 
 SET(CMAKE_C_FLAGS_INIT "${COMMON_FLAGS} -std=gnu99")
 SET(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,-gc-sections,--print-memory-usage,-u, -T ${LINKER_SCRIPT}")
@@ -26,8 +26,8 @@ SET(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,-gc-sections,--print-memory-usage,-u, -T ${
 PROJECT(qemu-lm3s C ASM)
 set(CMAKE_C_STANDARD 99)
 
-add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
-#add_executable(${PROJECT_NAME}.elf main.c 1_replacement_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
+#add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
+add_executable(${PROJECT_NAME}.elf main.c 1_replacement_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
 #add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1_minimal_replacment.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
 
 set(CMAKE_EXE_LINKER_FLAGS

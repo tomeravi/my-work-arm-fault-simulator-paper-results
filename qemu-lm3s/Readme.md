@@ -18,6 +18,14 @@ QEMU cmd arguments:
 * `-S` - freeze execution, wait until gdb is connected
 * `-kernel README` - load binary garbage as kernel ( here we use the final build image qemu-lm3s.bin)
 
+Tomer's comment :
+In CMakeFiles.txt - there are 3 lines of 3 types of assembly code (naked, full replacmenent , minimize replacment)
+in order to check performance i rebuild each time with following commands:
+rm -rf build/
+cmake -S . -B build/
+cd build/
+make clean
+make
 qemu-system-arm -M lm3s6965evb -cpu cortex-m3 -m 128M  -nographic -kernel qemu-lm3s.bin
 
 Standard CMSIS 5 for Cortex-M3 + libnano are used. CMSIS is modified according to lm3s memory map.
