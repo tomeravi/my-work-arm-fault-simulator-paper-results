@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdatomic.h>
 #include "cmsis/ARMCM3.h"
 
 typedef unsigned char u8; 
@@ -57,7 +58,7 @@ const uint64_t TEST64_BIT_VALUES[] = {
     0LL/*Last must be zero*/,
 };
 
-volatile uint32_t myTicks;
+static atomic_uint myTicks = 0;
 
 void SysTick_Handler(void) {
   myTicks++;
@@ -77,22 +78,26 @@ int main(void) {
   
     printf("Size of the peripheral struct %d\n", sizeof(*FAKE_PERIPHERAL));
     SystemInit();
-    SysTick_Config(1200000UL);
+    SysTick_Config(SystemCoreClock/1000);
     printf("init done\n");
  sum_results = 0;
  for(c=0;c<counter;c++)
  {
+    copy_once = 1;
     start_time = myTicks;  
     //key[0] = 0x0; //uncomment in order to check that that encryption works !
 
     for (i = 0; i < len; i++) {
-
+      //printf("line: %d\n",__LINE__);
       AES_ECB_encrypt(key, plaintext);
+      //printf("line: %d\n",__LINE__);
       if(copy_once)
       {
-        memcpy(plaintext1,plaintext,16);
+        printf("line: %d\n",__LINE__);
+        //memcpy(plaintext1,plaintext,16);
         copy_once = 0;
       }
+      //printf("line: %d\n",__LINE__);
     }
 
     stop_time = myTicks; 

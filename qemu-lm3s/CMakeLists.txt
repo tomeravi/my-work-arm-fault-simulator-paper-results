@@ -2,7 +2,7 @@
 SET(CMAKE_SYSTEM_NAME Generic)
 SET(CMAKE_SYSTEM_VERSION 1)
 cmake_minimum_required(VERSION 3.7)
-
+set(CMAKE_VERBOSE_MAKEFILE ON)
 # specify cross compilers and tools
 SET(CMAKE_C_COMPILER_WORKS 1)
 SET(CMAKE_C_COMPILER arm-none-eabi-gcc)
@@ -24,11 +24,11 @@ SET(CMAKE_C_FLAGS_INIT "${COMMON_FLAGS} -std=gnu99")
 SET(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,-gc-sections,--print-memory-usage,-u, -T ${LINKER_SCRIPT}")
 
 PROJECT(qemu-lm3s C ASM)
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 
-#add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
-add_executable(${PROJECT_NAME}.elf main.c 1_replacement_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
-#add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1_minimal_replacment.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
+add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
+#add_executable(${PROJECT_NAME}.elf main.c 1_replacement_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
+#add_executable(${PROJECT_NAME}.elf main.c  0_naked_armv7-m_O1_minimal_replacment.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
 
 set(CMAKE_EXE_LINKER_FLAGS
     "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map")
