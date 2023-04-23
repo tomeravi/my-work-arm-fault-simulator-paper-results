@@ -26,9 +26,9 @@ SET(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,-gc-sections,--print-memory-usage,-u, -T ${
 PROJECT(qemu-lm3s C ASM)
 set(CMAKE_C_STANDARD 11)
 
-add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
-#add_executable(${PROJECT_NAME}.elf main.c 1_replacement_armv7-m_O1.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
-#add_executable(${PROJECT_NAME}.elf main.c  0_naked_armv7-m_O1_minimal_replacment.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
+#add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1.s                    cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
+# add_executable(${PROJECT_NAME}.elf main.c 1_replacement_armv7-m_O1.s              cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
+add_executable(${PROJECT_NAME}.elf main.c 0_naked_armv7-m_O1_minimal_replacment.s cmsis/startup_ARMCM3.S cmsis/system_ARMCM3.c ${LINKER_SCRIPT})
 
 set(CMAKE_EXE_LINKER_FLAGS
     "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map")

@@ -81,9 +81,11 @@ int main(void) {
     SysTick_Config(SystemCoreClock/1000);
     printf("init done\n");
  sum_results = 0;
+ copy_once = 1;
+
  for(c=0;c<counter;c++)
  {
-    copy_once = 1;
+    
     start_time = myTicks;  
     //key[0] = 0x0; //uncomment in order to check that that encryption works !
 
@@ -91,10 +93,12 @@ int main(void) {
       //printf("line: %d\n",__LINE__);
       AES_ECB_encrypt(key, plaintext);
       //printf("line: %d\n",__LINE__);
+
+      // #### please notice that adding printf will disrupt/spoil the results !!!!
       if(copy_once)
       {
-        printf("line: %d\n",__LINE__);
-        //memcpy(plaintext1,plaintext,16);
+        //printf("line: %d\n",__LINE__); 
+        memcpy(plaintext1,plaintext,16);
         copy_once = 0;
       }
       //printf("line: %d\n",__LINE__);
