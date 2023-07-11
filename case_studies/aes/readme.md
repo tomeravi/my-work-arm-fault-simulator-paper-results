@@ -1,6 +1,8 @@
 
+**report analyzer tool**
+consist from summaries_report.py and count_and_present.py
 
-Scripts :
+**Scripts :**
 
 1. generate_files.py - generate files/.s for aes.c and with 2 countermeaure
 
@@ -13,7 +15,7 @@ Scripts :
 5. use #3 to use the tmp report of naked file and use it as input for add_ignore_labels_to_s.py
 
 #####
-Flow:
+**Flow:**
 - generate_files.py -generate naked .s file and replacement .s file
 - run test_all.py and summaries_report.py
 - add_ignore_labels_to_s.py - use the report of naked to created naked with ignore labels
